@@ -9,3 +9,6 @@ A mindful morning mobile app designed to replace doom-scrolling. Start your day 
 ## To-Do & Updates:
 - [ ] Fix the user input sections on journal + to-do screen
 - [ ] Screen transitions
+- [ ] Change theme as day progressess (morning, noon, night)
+- [ ] Remember user "name" input after first prompting
+- [ ] Make journal + to-do archives 
