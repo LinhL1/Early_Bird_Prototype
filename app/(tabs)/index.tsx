@@ -31,9 +31,9 @@ const MainPage: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [quote, setQuote] = useState('');
-  const [gratitude1, setGratitude1] = useState('');
-  const [gratitude2, setGratitude2] = useState('');
-  const [gratitude3, setGratitude3] = useState('');
+  // const [gratitude1, setGratitude1] = useState('');
+  // const [gratitude2, setGratitude2] = useState('');
+  // const [gratitude3, setGratitude3] = useState('');
   const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
   const [newTodo, setNewTodo] = useState('');
 
@@ -200,76 +200,82 @@ const MainPage: React.FC = () => {
     </Animated.View>
   );
 
-  const JournalScreen = () => (
-    <View style={styles.journalContainer}>
+const JournalScreen = () => {
+  const [gratitude1, setGratitude1] = useState("");
+  const [gratitude2, setGratitude2] = useState("");
+  const [gratitude3, setGratitude3] = useState("");
+
+  const gratitude2Ref = useRef<TextInput>(null);
+  const gratitude3Ref = useRef<TextInput>(null);
+
+  const handleGratitudeSubmit = (n: number) => {
+    if (n === 1) gratitude2Ref.current?.focus();
+    if (n === 2) gratitude3Ref.current?.focus();
+    if (n === 3) Keyboard.dismiss();
+  };
+
+  return (
+    
+    <View style={styles.gratitudeSection}>
+        <Text style={styles.journalTitle}>Morning Gratitude</Text>
+      <Text style={styles.journalSubtitle}>What are you grateful for today?</Text>
+
       <TouchableOpacity 
-        style={styles.backButton}
+        style={styles.backButtonJournal}
         onPress={() => {
           setScreen('quote');
           animateQuote();
         }}
       >
         <Text style={styles.backButtonText}>← Back to Quote</Text>
-      </TouchableOpacity>
-      
-      <Text style={styles.journalTitle}>Morning Gratitude</Text>
-      <Text style={styles.journalSubtitle}>What are you grateful for today?</Text>
-      
-      <View style={styles.gratitudeSection}>
-        <View style={styles.gratitudeItem}>
-          <Text style={styles.gratitudeNumber}>1.</Text>
-          <TextInput
-            style={styles.gratitudeInput}
-            placeholder="Something you're thankful for..."
-            placeholderTextColor="#8D6E63"
-            value={gratitude1}
-            onChangeText={setGratitude1}
-            multiline={false}
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => handleGratitudeSubmit(1)}
-          />
-        </View>
-
-        <View style={styles.gratitudeItem}>
-          <Text style={styles.gratitudeNumber}>2.</Text>
-          <TextInput
-            ref={gratitude2Ref}
-            style={styles.gratitudeInput}
-            placeholder="Another blessing in your life..."
-            placeholderTextColor="#8D6E63"
-            value={gratitude2}
-            onChangeText={setGratitude2}
-            multiline={false}
-            returnKeyType="next"
-            blurOnSubmit={false}
-            onSubmitEditing={() => handleGratitudeSubmit(2)}
-          />
-        </View>
-
-        <View style={styles.gratitudeItem}>
-          <Text style={styles.gratitudeNumber}>3.</Text>
-          <TextInput
-            ref={gratitude3Ref}
-            style={styles.gratitudeInput}
-            placeholder="One more thing to appreciate..."
-            placeholderTextColor="#8D6E63"
-            value={gratitude3}
-            onChangeText={setGratitude3}
-            multiline={false}
-            returnKeyType="done"
-            blurOnSubmit={true}
-            onSubmitEditing={() => handleGratitudeSubmit(3)}
-          />
-        </View>
+  </TouchableOpacity>
+      <View style={styles.gratitudeItem}>
+     
+        <Text style={styles.gratitudeNumber}>1.</Text>
+        <TextInput
+          placeholder="Something you're thankful for..."
+          placeholderTextColor="#8D6E63"
+          style={[styles.gratitudeInput, { flex: 1 }]}
+          value={gratitude1}
+          onChangeText={setGratitude1}
+          returnKeyType="next"
+          blurOnSubmit={false}
+          onSubmitEditing={() => handleGratitudeSubmit(1)}
+        />
       </View>
 
-      <View style={styles.journalFooter}>
-        <Text style={styles.footerText}>Starting your day with gratitude</Text>
-        <Text style={styles.footerHint}>Press Enter to move to the next field</Text>
+      <View style={styles.gratitudeItem}>
+        <Text style={styles.gratitudeNumber}>2.</Text>
+        <TextInput
+          placeholder="Another blessing in your life..."
+          placeholderTextColor="#8D6E63"
+          ref={gratitude2Ref}
+          style={[styles.gratitudeInput, { flex: 1 }]}
+          value={gratitude2}
+          onChangeText={setGratitude2}
+          returnKeyType="next"
+          blurOnSubmit={false}
+          onSubmitEditing={() => handleGratitudeSubmit(2)}
+        />
+      </View>
+
+      <View style={styles.gratitudeItem}>
+        <Text style={styles.gratitudeNumber}>3.</Text>
+        <TextInput
+          placeholder="One more thing to appreciate..."
+          placeholderTextColor="#8D6E63"
+          ref={gratitude3Ref}
+          style={[styles.gratitudeInput, { flex: 1 }]}
+          value={gratitude3}
+          onChangeText={setGratitude3}
+          returnKeyType="done"
+          onSubmitEditing={() => handleGratitudeSubmit(3)}
+        />
       </View>
     </View>
   );
+};
+
 
   const ToDoScreen = () => (
     <View style={styles.todoContainer}>
@@ -526,6 +532,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     zIndex: 10,
   },
+  backButtonJournal: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    backgroundColor: 'rgba(93, 64, 55, 0.1)',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    zIndex: 10,
+  },
+  backButtonTextJournal:{
+    color: '#5D4037',
+    fontSize: 16,
+    fontWeight: '500',
+  },
   backButtonText: {
     color: '#5D4037',
     fontSize: 16,
@@ -570,7 +591,7 @@ const styles = StyleSheet.create({
   journalContainer: {
     flex: 1,
     paddingTop: 80,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingBottom: 40,
     backgroundColor: '#FFF3CD',
   },
@@ -578,14 +599,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '600',
     color: '#5D4037',
-    marginBottom: 8,
+    marginTop: 80,
     textAlign: 'center',
   },
   journalSubtitle: {
     fontSize: 18,
     color: '#8D6E63',
     textAlign: 'center',
-    marginBottom: 40,
+    marginTop: 1,
+    marginBottom: 10,
     fontWeight: '300',
   },
   gratitudeSection: {
