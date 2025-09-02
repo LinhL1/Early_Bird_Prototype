@@ -272,6 +272,10 @@ const JournalScreen = () => {
           onSubmitEditing={() => handleGratitudeSubmit(3)}
         />
       </View>
+      <View style={styles.journalFooter}>
+        <Text style={styles.footerText}>Starting your day with gratitude</Text>
+        <Text style={styles.footerHint}>Press Enter to move to the next field</Text>
+      </View>
     </View>
   );
 };
