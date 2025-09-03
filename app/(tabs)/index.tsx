@@ -36,6 +36,7 @@ const MainPage: React.FC = () => {
   // const [gratitude3, setGratitude3] = useState('');
   const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
   const [newTodo, setNewTodo] = useState('');
+  ////ISSUE FOUND !!!!
 
   const greetingOpacity = useRef(new Animated.Value(0)).current;
   const greetingTranslate = useRef(new Animated.Value(30)).current;
@@ -48,18 +49,39 @@ const MainPage: React.FC = () => {
   const gratitude2Ref = useRef<TextInput>(null);
   const gratitude3Ref = useRef<TextInput>(null);
 
+  const todoInputRef = useRef<TextInput>(null);
+
+
+  // const addTodo = () => {
+  //   if (newTodo.trim()) {
+  //     const newTodoItem = {
+  //       id: Date.now(),
+  //       text: newTodo.trim(),
+  //       completed: false
+  //     };
+  //     setTodos([...todos, newTodoItem]);
+  //     setNewTodo('');
+  //     Keyboard.dismiss();
+  //   }
+  // };
+
   const addTodo = () => {
-    if (newTodo.trim()) {
-      const newTodoItem = {
-        id: Date.now(),
-        text: newTodo.trim(),
-        completed: false
-      };
-      setTodos([...todos, newTodoItem]);
-      setNewTodo('');
-      Keyboard.dismiss();
-    }
-  };
+  if (newTodo.trim()) {
+    const newTodoItem = {
+      id: Date.now(),
+      text: newTodo.trim(),
+      completed: false,
+    };
+    setTodos([...todos, newTodoItem]);
+    setNewTodo('');
+
+    // Keep focus on the input after adding a task
+    setTimeout(() => {
+      todoInputRef.current?.focus();
+    }, 50);
+  }
+};
+
 
   const toggleTodo = (id: number) => {
     setTodos(todos.map(todo => 
@@ -281,7 +303,108 @@ const JournalScreen = () => {
 };
 
 
-  const ToDoScreen = () => (
+  // const ToDoScreen = () => (
+  //   <View style={styles.todoContainer}>
+  //     <TouchableOpacity 
+  //       style={styles.backButtonTodo}
+  //       onPress={() => {
+  //         setScreen('quote');
+  //         animateQuote();
+  //       }}
+  //     >
+  //       <Text style={styles.backButtonTextTodo}>← Back to Quote</Text>
+  //     </TouchableOpacity>
+      
+  //     <Text style={styles.todoTitle}>Your To-Do List</Text>
+      
+  //     <View style={styles.todoInputContainer}>
+  //       <TextInput
+  //         style={styles.todoInput}
+  //         placeholder="Add a new task..."
+  //         placeholderTextColor="#6B8F9C"
+  //         value={newTodo}
+  //         onChangeText={setNewTodo}
+  //         onSubmitEditing={addTodo}
+  //         returnKeyType="done"
+  //         multiline={false}
+  //         blurOnSubmit={false}
+  //       />
+  //       <TouchableOpacity
+  //         style={styles.addButton}
+  //         onPress={addTodo}
+  //         disabled={!newTodo.trim()}
+  //       >
+  //         <Text style={styles.addButtonText}>+</Text>
+  //       </TouchableOpacity>
+  //     </View>
+
+  //     <Text style={styles.todoHint}>Press Enter to add your task</Text>
+
+  //     <View style={styles.todoList}>
+  //       {todos.length === 0 ? (
+  //         <Text style={styles.emptyState}>No tasks yet. Add one above!</Text>
+  //       ) : (
+  //         todos.map((todo) => (
+  //           <View key={todo.id} style={styles.todoItem}>
+  //             <TouchableOpacity
+  //               style={[styles.checkbox, todo.completed && styles.checkboxCompleted]}
+  //               onPress={() => toggleTodo(todo.id)}
+  //             >
+  //               <Text style={styles.checkmark}>{todo.completed ? '✓' : ''}</Text>
+  //             </TouchableOpacity>
+              
+  //             <Text style={[
+  //               styles.todoText,
+  //               todo.completed && styles.todoTextCompleted
+  //             ]}>
+  //               {todo.text}
+  //             </Text>
+              
+  //             <TouchableOpacity
+  //               style={styles.deleteButton}
+  //               onPress={() => deleteTodo(todo.id)}
+  //             >
+  //               <Text style={styles.deleteButtonText}>×</Text>
+  //             </TouchableOpacity>
+  //           </View>
+  //         ))
+  //       )}
+  //     </View>
+      
+  //     {todos.length > 0 && (
+  //       <View style={styles.todoStats}>
+  //         <Text style={styles.statsText}>
+  //           {todos.filter(t => t.completed).length} of {todos.length} completed
+  //         </Text>
+  //       </View>
+  //     )}
+  //   </View>
+  // );
+
+  const ToDoScreen = () => {
+  const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
+  const [newTodo, setNewTodo] = useState('');
+
+  const todoInputRef = useRef<TextInput>(null);
+
+  const handleTodoSubmit = () => {
+    if (newTodo.trim()) {
+      const newTodoItem = {
+        id: Date.now(),
+        text: newTodo.trim(),
+        completed: false,
+      };
+      setTodos([...todos, newTodoItem]);
+      setNewTodo('');
+      
+      // Keep focus on the input after adding a task
+      setTimeout(() => {
+        todoInputRef.current?.focus();
+      }, 50);
+    }
+  };
+
+  return (
     <View style={styles.todoContainer}>
       <TouchableOpacity 
         style={styles.backButtonTodo}
@@ -297,19 +420,20 @@ const JournalScreen = () => {
       
       <View style={styles.todoInputContainer}>
         <TextInput
+          ref={todoInputRef}
           style={styles.todoInput}
           placeholder="Add a new task..."
           placeholderTextColor="#6B8F9C"
           value={newTodo}
           onChangeText={setNewTodo}
-          onSubmitEditing={addTodo}
+          onSubmitEditing={handleTodoSubmit}
           returnKeyType="done"
           multiline={false}
           blurOnSubmit={false}
         />
         <TouchableOpacity
           style={styles.addButton}
-          onPress={addTodo}
+          onPress={handleTodoSubmit}
           disabled={!newTodo.trim()}
         >
           <Text style={styles.addButtonText}>+</Text>
@@ -358,6 +482,7 @@ const JournalScreen = () => {
       )}
     </View>
   );
+};
 
   const QuoteScreen = () => (
     <Animated.View
