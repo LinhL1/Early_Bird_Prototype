@@ -382,10 +382,10 @@ const JournalScreen = () => {
   // );
 
   const ToDoScreen = () => {
-  const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
+  // const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
   const [newTodo, setNewTodo] = useState('');
 
-  const todoInputRef = useRef<TextInput>(null);
+  // const todoInputRef = useRef<TextInput>(null);
 
   const handleTodoSubmit = () => {
     if (newTodo.trim()) {
