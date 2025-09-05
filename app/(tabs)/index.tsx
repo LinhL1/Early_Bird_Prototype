@@ -31,9 +31,7 @@ const MainPage: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [quote, setQuote] = useState('');
-  // const [gratitude1, setGratitude1] = useState('');
-  // const [gratitude2, setGratitude2] = useState('');
-  // const [gratitude3, setGratitude3] = useState('');
+
   const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
   const [newTodo, setNewTodo] = useState('');
   ////ISSUE FOUND !!!!
@@ -51,19 +49,9 @@ const MainPage: React.FC = () => {
 
   const todoInputRef = useRef<TextInput>(null);
 
+  const nameInputRef = useRef<TextInput>(null);
 
-  // const addTodo = () => {
-  //   if (newTodo.trim()) {
-  //     const newTodoItem = {
-  //       id: Date.now(),
-  //       text: newTodo.trim(),
-  //       completed: false
-  //     };
-  //     setTodos([...todos, newTodoItem]);
-  //     setNewTodo('');
-  //     Keyboard.dismiss();
-  //   }
-  // };
+
 
   const addTodo = () => {
   if (newTodo.trim()) {
@@ -93,13 +81,6 @@ const MainPage: React.FC = () => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
 
-  const handleNameSubmit = () => {
-    if (!inputName.trim()) return;
-    setUserName(inputName.trim());
-    Keyboard.dismiss();
-    setScreen('greeting');
-    animateGreeting();
-  };
 
   // Handle gratitude input submissions
   const handleGratitudeSubmit = (gratitudeNumber: number) => {
@@ -116,25 +97,25 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const animateGreeting = () => {
-    greetingOpacity.setValue(0);
-    greetingTranslate.setValue(30);
+  const animateGreeting = (name: string) => {
+  greetingOpacity.setValue(0);
+  greetingTranslate.setValue(30);
 
-    Animated.parallel([
-      Animated.timing(greetingOpacity, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.timing(greetingTranslate, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      startTypingAnimation(`Good Morning, ${inputName.trim()}`);
-    });
-  };
+  Animated.parallel([
+    Animated.timing(greetingOpacity, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }),
+    Animated.timing(greetingTranslate, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }),
+  ]).start(() => {
+    startTypingAnimation(`Good Morning, ${name.trim()}`);
+  });
+};
 
   const startTypingAnimation = (text: string) => {
     let i = 0;
@@ -177,7 +158,22 @@ const MainPage: React.FC = () => {
     ]).start();
   };
 
-  const InputScreen = () => (
+
+  const InputScreen = () => {
+  const [inputName, setInputName] = useState('');
+  const nameInputRef = useRef<TextInput>(null); // 👈 define inside
+
+
+  const handleNameSubmit = () => {
+    if (!inputName.trim()) return;
+    setUserName(inputName.trim());
+    Keyboard.dismiss();
+    setScreen('greeting');
+    // animateGreeting();
+    animateGreeting(inputName.trim());
+  };
+
+  return (
     <View style={styles.inputScreen}>
       <Text style={[styles.promptText, { fontSize: 50 }]}>
         Welcome, <Text style={{ color: '#CC8400' }}>Early Bird</Text>
@@ -185,6 +181,7 @@ const MainPage: React.FC = () => {
       <Text style={styles.promptText}>What would you like to be called?</Text>
       <View style={styles.inputContainer}>
         <TextInput
+          ref={nameInputRef}                   // 👈 stable reference
           style={styles.textInput}
           placeholder="Enter your name"
           placeholderTextColor="#7c5a44"
@@ -193,6 +190,7 @@ const MainPage: React.FC = () => {
           onSubmitEditing={handleNameSubmit}
           returnKeyType="done"
           autoFocus
+          blurOnSubmit={false}                 // 👈 don’t blur on re-render
         />
         <TouchableOpacity
           style={styles.submitButton}
@@ -204,6 +202,7 @@ const MainPage: React.FC = () => {
       </View>
     </View>
   );
+};
 
   const GreetingScreen = () => (
     <Animated.View
@@ -301,85 +300,6 @@ const JournalScreen = () => {
     </View>
   );
 };
-
-
-  // const ToDoScreen = () => (
-  //   <View style={styles.todoContainer}>
-  //     <TouchableOpacity 
-  //       style={styles.backButtonTodo}
-  //       onPress={() => {
-  //         setScreen('quote');
-  //         animateQuote();
-  //       }}
-  //     >
-  //       <Text style={styles.backButtonTextTodo}>← Back to Quote</Text>
-  //     </TouchableOpacity>
-      
-  //     <Text style={styles.todoTitle}>Your To-Do List</Text>
-      
-  //     <View style={styles.todoInputContainer}>
-  //       <TextInput
-  //         style={styles.todoInput}
-  //         placeholder="Add a new task..."
-  //         placeholderTextColor="#6B8F9C"
-  //         value={newTodo}
-  //         onChangeText={setNewTodo}
-  //         onSubmitEditing={addTodo}
-  //         returnKeyType="done"
-  //         multiline={false}
-  //         blurOnSubmit={false}
-  //       />
-  //       <TouchableOpacity
-  //         style={styles.addButton}
-  //         onPress={addTodo}
-  //         disabled={!newTodo.trim()}
-  //       >
-  //         <Text style={styles.addButtonText}>+</Text>
-  //       </TouchableOpacity>
-  //     </View>
-
-  //     <Text style={styles.todoHint}>Press Enter to add your task</Text>
-
-  //     <View style={styles.todoList}>
-  //       {todos.length === 0 ? (
-  //         <Text style={styles.emptyState}>No tasks yet. Add one above!</Text>
-  //       ) : (
-  //         todos.map((todo) => (
-  //           <View key={todo.id} style={styles.todoItem}>
-  //             <TouchableOpacity
-  //               style={[styles.checkbox, todo.completed && styles.checkboxCompleted]}
-  //               onPress={() => toggleTodo(todo.id)}
-  //             >
-  //               <Text style={styles.checkmark}>{todo.completed ? '✓' : ''}</Text>
-  //             </TouchableOpacity>
-              
-  //             <Text style={[
-  //               styles.todoText,
-  //               todo.completed && styles.todoTextCompleted
-  //             ]}>
-  //               {todo.text}
-  //             </Text>
-              
-  //             <TouchableOpacity
-  //               style={styles.deleteButton}
-  //               onPress={() => deleteTodo(todo.id)}
-  //             >
-  //               <Text style={styles.deleteButtonText}>×</Text>
-  //             </TouchableOpacity>
-  //           </View>
-  //         ))
-  //       )}
-  //     </View>
-      
-  //     {todos.length > 0 && (
-  //       <View style={styles.todoStats}>
-  //         <Text style={styles.statsText}>
-  //           {todos.filter(t => t.completed).length} of {todos.length} completed
-  //         </Text>
-  //       </View>
-  //     )}
-  //   </View>
-  // );
 
   const ToDoScreen = () => {
   // const [todos, setTodos] = useState<{ id: number; text: string; completed: boolean }[]>([]);
