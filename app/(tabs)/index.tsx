@@ -26,7 +26,7 @@ const quotes = [
 
 const MainPage: React.FC = () => {
   const [userName, setUserName] = useState('');
-  const [inputName, setInputName] = useState('');
+  //const [inputName, setInputName] = useState('');
   const [screen, setScreen] = useState<'input' | 'greeting' | 'quote' | 'journal' | 'todo'>('input');
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
